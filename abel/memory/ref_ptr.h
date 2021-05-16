@@ -144,12 +144,12 @@ namespace abel {
     template<class T, class Deleter>
     struct ref_traits<ref_counted<T, Deleter>> {
         static void reference(ref_counted<T, Deleter> *ptr) noexcept {
-            DCHECK_GT(ptr->unsafe_ref_count(), 0);
+            DCHECK_GT(ptr->unsafe_ref_count(), 0ul);
             ptr->ref();
         }
 
         static void dereference(ref_counted<T, Deleter> *ptr) noexcept {
-            DCHECK_GT(ptr->unsafe_ref_count(), 0);
+            DCHECK_GT(ptr->unsafe_ref_count(), 0ul);
             ptr->deref();
         }
     };
@@ -261,7 +261,7 @@ namespace abel {
     template<class T, class Deleter>
     constexpr void ref_counted<T, Deleter>::ref() noexcept {
         auto was = ref_count_.fetch_add(1, std::memory_order_relaxed);
-        DCHECK_GT(was, 0);
+        DCHECK_GT(was, 0ul);
     }
 
     template<class T, class Deleter>
@@ -273,7 +273,7 @@ namespace abel {
         if (auto was = ref_count_.fetch_sub(1, std::memory_order_acq_rel); was == 1) {
             Deleter()(static_cast<T *>(this));  // Hmmm.
         } else {
-            DCHECK_GT(was, 1);
+            DCHECK_GT(was, 1u);
         }
     }
 

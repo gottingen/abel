@@ -17,19 +17,20 @@ namespace abel {
     namespace io_internal {
         constexpr auto kMaxBlocksPerRead = 8;
 
-        std::vector<ref_ptr<native_iobuf_block>> *refill_and_get_blocks() {
-            thread_local std::vector<ref_ptr<native_iobuf_block>> cache;
+       void refill_and_get_blocks( std::vector<ref_ptr<native_iobuf_block>> &cache) {
             while (cache.size() < kMaxBlocksPerRead) {
                 cache.push_back(make_native_ionuf_block());
             }
-            return &cache;
         }
+
+        /// TODO make block_cache thread local?
 
         ssize_t read_partial(std::size_t max_bytes, io_stream_base *io,
                              iobuf *to, bool *short_read) {
-            auto &&block_cache = refill_and_get_blocks();
+            std::vector<ref_ptr<native_iobuf_block>> block_cache;
+            refill_and_get_blocks(block_cache);
             iovec iov[kMaxBlocksPerRead];
-            DCHECK_EQ(block_cache->size(), std::size(iov));
+            DCHECK_EQ(block_cache.size(), ABEL_ARRAY_SIZE(iov), "{}, {}", block_cache.size(), ABEL_ARRAY_SIZE(iov));
 
             std::size_t iov_elements = 0;
             std::size_t bytes_to_read = 0;
@@ -37,7 +38,7 @@ namespace abel {
                 auto &&iove = iov[iov_elements];
                 // Use blocks from back to front. This helps when we removes used blocks
                 // from the cache (popping from back of a vector is cheaper.).
-                auto &&block = (*block_cache)[kMaxBlocksPerRead - 1 - iov_elements];
+                auto &&block = (block_cache)[kMaxBlocksPerRead - 1 - iov_elements];
                 auto len =
                         std::min(block->size(), max_bytes - bytes_to_read /* Bytes left */);
 
@@ -52,17 +53,17 @@ namespace abel {
             if (ABEL_UNLIKELY(result <= 0)) {
                 return result;
             }
-            DCHECK_LE(static_cast<size_t>(result) , bytes_to_read);
+            DCHECK_LE(static_cast<size_t>(result), bytes_to_read);
             *short_read = (static_cast<size_t>(result) != bytes_to_read);
             std::size_t bytes_left = result;
 
             // Remove used blocks from the cache and move them into `to`.
             while (bytes_left) {
-                auto current = std::move(block_cache->back());
+                auto current = std::move(block_cache.back());
                 auto len = std::min(bytes_left, current->size());
                 to->append(iobuf_slice(std::move(current), 0, len));
                 bytes_left -= len;
-                block_cache->pop_back();
+                block_cache.pop_back();
             }
             return result;
         }

@@ -112,7 +112,7 @@ namespace abel {
 
         struct iobuf_block_deleter {
             void operator()(iobuf_block *p) {
-                DCHECK_EQ(p->unsafe_ref_count(), 0);
+                DCHECK_EQ(p->unsafe_ref_count(), 0ul);
                 p->ref_count_.store(1, std::memory_order_relaxed);  // Rather hacky.
                 p->destroy();
             }
