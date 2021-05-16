@@ -49,7 +49,7 @@ namespace abel {
 
 
     constexpr uuid::uuid(const std::string_view &from) {
-        DCHECK_EQ(from.size(), 36);  // 8-4-4-4-12
+        DCHECK_EQ(from.size(), 36ul);  // 8-4-4-4-12
         auto p = from.data();
 
         bytes_[0] = to_uint8(p);

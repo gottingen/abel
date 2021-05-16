@@ -481,19 +481,6 @@ cc_test(
                 "@com_google_googletest//:gtest",
             ],
         )
-cc_test(
-            name = "random_test",
-            size = "small",
-            srcs = glob(["random/*.cc",]),
-            copts = CARBIN_TEST_COPTS,
-            linkopts = CARBIN_DEFAULT_LINKOPTS,
-            deps = [
-                "//abel:abel",
-                "//testing:testing",
-                "@com_google_googletest//:gtest_main",
-                "@com_google_googletest//:gtest",
-            ],
-        )
 
 cc_test(
             name = "status_test",

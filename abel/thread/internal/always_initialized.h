@@ -94,7 +94,7 @@ namespace abel {
 
         template<class T>
         thread_local_always_initialized<T>::~thread_local_always_initialized() {
-            DCHECK_EQ(offset_ % sizeof(T), 0);
+            DCHECK_EQ(offset_ % sizeof(T), 0ul);
             auto index = offset_ / sizeof(T);
 
             // The slot is freed after we have destroyed all instances.
@@ -116,7 +116,7 @@ namespace abel {
         template<class T>
         template<class F>
         void thread_local_always_initialized<T>::for_each(F &&f) const {
-            DCHECK_EQ(offset_ % sizeof(T), 0);
+            DCHECK_EQ(offset_ % sizeof(T), 0ul);
             auto index = offset_ / sizeof(T);
 
             object_array_registry<T>::instance()->for_each_locked(

@@ -27,11 +27,11 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "abel/log/logging.h"
-#include "abel/random/distributions.h"
-#include "abel/random/random.h"
 #include "testing/numbers_test_common.h"
 #include "testing/pow10_helper.h"
 #include "abel/strings/str_cat.h"
+#include "abel/base/random.h"
+#include "abel/strings/internal/ostringstream.h"
 
 namespace {
 
@@ -1268,10 +1268,8 @@ namespace {
         TestFastHexToBufferZeroPad16(std::numeric_limits<uint64_t>::max());
         TestFastHexToBufferZeroPad16(std::numeric_limits<int64_t>::min());
         TestFastHexToBufferZeroPad16(std::numeric_limits<int64_t>::max());
-        abel::bit_gen rng;
         for (int i = 0; i < 100000; ++i) {
-            TestFastHexToBufferZeroPad16(
-                    abel::LogUniform(rng, std::numeric_limits<uint64_t>::min(),
+            TestFastHexToBufferZeroPad16(abel::Random(std::numeric_limits<uint64_t>::min(),
                                      std::numeric_limits<uint64_t>::max()));
         }
     }

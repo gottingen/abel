@@ -213,7 +213,6 @@ TEST(locked_table, locked_table_erase_this) {
     for (int i = 0; i < 5; ++i) {
         tbl.insert(i, i);
     }
-    using lt_t = IntIntTable::locked_table;
 
     {
         auto lt = tbl.lock_table();
@@ -235,7 +234,6 @@ TEST(locked_table, locked_table_erase_other) {
     for (int i = 0; i < 5; ++i) {
         tbl.insert(i, i);
     }
-    using lt_t = IntIntTable::locked_table;
 
     {
         auto lt = tbl.lock_table();

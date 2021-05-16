@@ -544,7 +544,7 @@ namespace abel {
 
     template<class T>
     void object_pool_deleter<T>::operator()(T *p) const noexcept {
-        DCHECK_EQ(p->ref_count_.load(std::memory_order_relaxed), 0);
+        DCHECK_EQ(p->ref_count_.load(std::memory_order_relaxed), 0ul);
 
         // Keep ref-count as 1 for reuse.
         //

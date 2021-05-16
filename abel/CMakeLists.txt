@@ -14,21 +14,11 @@ FILE(GLOB MEM_SRC "memory/*.cc")
 
 FILE(GLOB NET_SRC "net/*.cc")
 
-
-FILE(GLOB HARDWARE_SRC "hardware/*.cc")
-
 FILE(GLOB FIBER_SRC "fiber/*.cc")
 FILE(GLOB FIBER_INTERNAL_SRC "fiber/internal/*.cc")
 
 
 FILE(GLOB MEMORY_INTERNAL_SRC "memory/internal/*.cc")
-
-
-
-FILE(GLOB RND_SRC "random/*.cc")
-FILE(GLOB RND_ENGINE_SRC "random/engine/*.cc")
-FILE(GLOB RND_INTERNAL_SRC "random/internal/*.cc")
-FILE(GLOB RND_SEED_SRC "random/seed/*.cc")
 
 FILE(GLOB STRINGS_SRC "strings/*.cc")
 FILE(GLOB STRINGS_INTERNAL_SRC "strings/internal/*.cc")
@@ -63,12 +53,7 @@ SET(ABEL_SRC
         ${MEM_SRC}
         ${CHRONO_SRC}
         ${CHRONO_INTERNAL_SRC}
-        ${HARDWARE_SRC}
         ${METRICS_SRC}
-        ${RND_ENGINE_SRC}
-        ${RND_SEED_SRC}
-        ${RND_INTERNAL_SRC}
-        ${RND_SRC}
         ${STRINGS_SRC}
         ${STRINGS_INTERNAL_SRC}
         ${TYPES_SRC}
