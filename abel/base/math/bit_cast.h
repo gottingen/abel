@@ -15,19 +15,19 @@
 
 namespace abel {
 
-namespace math_internal {
+    namespace math_internal {
 
-template<class Dest, class Source>
-struct is_bitcastable
-        : std::integral_constant<
-                bool,
-                sizeof(Dest) == sizeof(Source) &&
-                abel::is_trivially_copyable<Source>::value &&
-                abel::is_trivially_copyable<Dest>::value &&
-                std::is_default_constructible<Dest>::value> {
-};
+        template<class Dest, class Source>
+        struct is_bitcastable
+                : std::integral_constant<
+                        bool,
+                        sizeof(Dest) == sizeof(Source) &&
+                        abel::is_trivially_copyable<Source>::value &&
+                        abel::is_trivially_copyable<Dest>::value &&
+                        std::is_default_constructible<Dest>::value> {
+        };
 
-}  // namespace math_internal
+    }  // namespace math_internal
 
 
 // bit_cast()
@@ -75,35 +75,35 @@ struct is_bitcastable
 // proposal p0476 due to the need for workarounds and lack of intrinsics.
 // Specifically, this implementation also requires `Dest` to be
 // default-constructible.
-template<
-        typename Dest, typename Source,
-        typename std::enable_if<math_internal::is_bitcastable<Dest, Source>::value,
-                int>::type = 0>
-ABEL_FORCE_INLINE Dest bit_cast(const Source &source) {
-    Dest dest;
-    memcpy(static_cast<void *>(std::addressof(dest)),
-           static_cast<const void *>(std::addressof(source)), sizeof(dest));
-    return dest;
-}
+    template<
+            typename Dest, typename Source,
+            typename std::enable_if<math_internal::is_bitcastable<Dest, Source>::value,
+                    int>::type = 0>
+    ABEL_FORCE_INLINE Dest bit_cast(const Source &source) {
+        Dest dest;
+        memcpy(static_cast<void *>(std::addressof(dest)),
+               static_cast<const void *>(std::addressof(source)), sizeof(dest));
+        return dest;
+    }
 
 // NOTE: This overload is only picked if the requirements of bit_cast are not
 // met. It is therefore UB, but is provided temporarily as previous versions of
 // this function template were unchecked. Do not use this in new code.
-template<
-        typename Dest, typename Source,
-        typename std::enable_if<
-                !math_internal::is_bitcastable<Dest, Source>::value, int>::type = 0>
-ABEL_DEPRECATED_MESSAGE(
-        "abel::bit_cast type requirements were violated. Update the types being "
-        "used such that they are the same size and are both TriviallyCopyable.")
-ABEL_FORCE_INLINE Dest bit_cast(const Source &source) {
-    static_assert(sizeof(Dest) == sizeof(Source),
-                  "Source and destination types should have equal sizes.");
+    template<
+            typename Dest, typename Source,
+            typename std::enable_if<
+                    !math_internal::is_bitcastable<Dest, Source>::value, int>::type = 0>
+    ABEL_DEPRECATED_MESSAGE(
+            "abel::bit_cast type requirements were violated. Update the types being "
+            "used such that they are the same size and are both TriviallyCopyable.")
+    ABEL_FORCE_INLINE Dest bit_cast(const Source &source) {
+        static_assert(sizeof(Dest) == sizeof(Source),
+                      "Source and destination types should have equal sizes.");
 
-    Dest dest;
-    memcpy(&dest, &source, sizeof(dest));
-    return dest;
-}
+        Dest dest;
+        memcpy(&dest, &source, sizeof(dest));
+        return dest;
+    }
 
 
 }  // namespace abel
